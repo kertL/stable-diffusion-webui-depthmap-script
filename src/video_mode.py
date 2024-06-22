@@ -193,7 +193,7 @@ def gen_video(video, outpath, inp, custom_depthmap=None, colorvids_bitrate=None,
     #fps, input_images = open_path_as_images(os.path.abspath(video.name))
     seq_no=0
     video_path_list = []
-    for fps, input_images in open_path_as_images_generator(os.path.abspath(video.name), batch_size=100, max_frames=150):
+    for fps, input_images in open_path_as_images_generator(os.path.abspath(video.name), batch_size=100, max_frames=None):
         seq_no+=1
         if custom_depthmap is None:
             print('Generating depthmaps for the video frames')
