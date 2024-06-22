@@ -161,12 +161,14 @@ def concat_videos(video_path, video_filenames, output_filename="output.mp4"):
     video_filenames (list): 要合并的视频文件名列表。
     output_filename (str): 合并后视频文件的名称，默认为"output.mp4"。
     """
+    print(f'video path is {video_path}')
+    print(f'os.path.sep is {os.path.sep}')
     # 确保视频路径以斜杠结尾
     if not video_path.endswith(os.path.sep):
         video_path += os.path.sep
 
     # 创建文件列表内容
-    filelist_content = "\n".join([f"file '{video_path}{filename}'" for filename in video_filenames])
+    filelist_content = "\n".join([f"file '{filename}'" for filename in video_filenames])
     filelist_path = os.path.join(video_path, 'filelist.txt')
 
     # 将文件列表内容写入临时txt文件
@@ -191,7 +193,7 @@ def gen_video(video, outpath, inp, custom_depthmap=None, colorvids_bitrate=None,
     #fps, input_images = open_path_as_images(os.path.abspath(video.name))
     seq_no=0
     video_path_list = []
-    for fps, input_images in open_path_as_images_generator(os.path.abspath(video.name), batch_size=100):
+    for fps, input_images in open_path_as_images_generator(os.path.abspath(video.name), batch_size=100, max_frames=150):
         seq_no+=1
         if custom_depthmap is None:
             print('Generating depthmaps for the video frames')
@@ -229,7 +231,7 @@ def gen_video(video, outpath, inp, custom_depthmap=None, colorvids_bitrate=None,
             video_file_name = f"depthmap-{backbone.get_next_sequence_number(outpath, basename)}-{basename}-{seq_no:04}"
             frames_to_video(fps, imgs, outpath, video_file_name,
                             colorvids_bitrate)
-            video_path_list.append(video_file_name)
+            video_path_list.append(f"{video_file_name}.mp4")
     concat_videos(outpath, video_path_list)
 
     for filename in video_path_list:
