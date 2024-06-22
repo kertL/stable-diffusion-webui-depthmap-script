@@ -30,7 +30,7 @@ def open_path_as_images_generator(path, maybe_depthvide=False, batch_size=400, m
                 frames_batch = []
         # 处理完所有帧后，如果还有剩余的帧没有返回，则在这里返回
         if frames_batch:
-            yield clip.fps, frames_batch
+            yield clip.fps, frames_batch, clip.reader.nframes
         #return clip.fps, frames
     else:
         raise NotImplementedError("only video is supported")
@@ -193,7 +193,7 @@ def gen_video(video, outpath, inp, custom_depthmap=None, colorvids_bitrate=None,
     #fps, input_images = open_path_as_images(os.path.abspath(video.name))
     seq_no=0
     video_path_list = []
-    for fps, input_images in open_path_as_images_generator(os.path.abspath(video.name), batch_size=100, max_frames=None):
+    for fps, input_images, nframes in open_path_as_images_generator(os.path.abspath(video.name), batch_size=100, max_frames=None):
         seq_no+=1
         if custom_depthmap is None:
             print('Generating depthmaps for the video frames')
@@ -215,7 +215,7 @@ def gen_video(video, outpath, inp, custom_depthmap=None, colorvids_bitrate=None,
             if input_depths[0].size != input_images[0].size:
                 print('Warning! Input video size and depthmap video size are not the same!')
 
-        print('Generating output frames')
+        print(f'Generating output frames(out of {nframes})')
         img_results = list(core.core_generation_funnel(None, input_images, input_depths, None, inp))
         gens = list(set(map(lambda x: x[1], img_results)))
 
