@@ -26,7 +26,7 @@ def open_path_as_images_generator(path, maybe_depthvide=False, batch_size=400, m
             # 检查是否达到批次大小
             if len(frames_batch) == batch_size:
                 # 达到批次大小时，yield当前批次的帧，并重置批次列表
-                yield clip.fps, frames_batch
+                yield clip.fps, frames_batch, clip.reader.nframes
                 frames_batch = []
         # 处理完所有帧后，如果还有剩余的帧没有返回，则在这里返回
         if frames_batch:
